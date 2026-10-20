@@ -1,0 +1,511 @@
+
+{% extends 'StudentAppointment/base.html' %}
+
+{% block title %}Dashboard | StudentAppointment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-page {
+        padding-bottom: 1.5rem;
+    }
+
+    .dashboard-heading {
+        margin-bottom: 1.75rem;
+    }
+
+    .dashboard-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        color: #4169a1;
+        background: #edf3fc;
+        border: 1px solid #dce7f7;
+        border-radius: 50px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        margin-bottom: 0.9rem;
+    }
+
+    .dashboard-title {
+        color: #263b59;
+        font-size: clamp(1.65rem, 3vw, 2.15rem);
+        font-weight: 800;
+        letter-spacing: -0.045em;
+        margin-bottom: 0.45rem;
+    }
+
+    .dashboard-subtitle {
+        color: #748197;
+        margin-bottom: 0;
+        line-height: 1.7;
+    }
+
+    .dashboard-primary-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        padding: 0.8rem 1.15rem;
+        border-radius: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+        box-shadow: 0 6px 16px rgba(65, 105, 161, 0.16);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dashboard-primary-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 9px 22px rgba(65, 105, 161, 0.22);
+    }
+
+    .dashboard-stats {
+        margin-bottom: 1.75rem;
+    }
+
+    .stat-card {
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        padding: 1.35rem;
+        box-shadow: 0 5px 20px rgba(38, 59, 89, 0.045);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 26px rgba(38, 59, 89, 0.085);
+    }
+
+    .stat-card::after {
+        content: "";
+        position: absolute;
+        right: -25px;
+        bottom: -35px;
+        width: 105px;
+        height: 105px;
+        border-radius: 50%;
+        background: var(--stat-tint);
+        opacity: 0.55;
+        pointer-events: none;
+    }
+
+    .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .stat-label {
+        color: #748197;
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .stat-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        background: var(--stat-tint);
+        color: var(--stat-color);
+        font-size: 1.25rem;
+        font-weight: 800;
+    }
+
+    .stat-number {
+        position: relative;
+        z-index: 1;
+        color: #263b59;
+        font-size: 2rem;
+        line-height: 1.1;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .stat-caption {
+        position: relative;
+        z-index: 1;
+        color: #8b96a8;
+        font-size: 0.78rem;
+        margin: 0.55rem 0 0;
+    }
+
+    .stat-total {
+        --stat-color: #4169a1;
+        --stat-tint: #eaf1fc;
+    }
+
+    .stat-pending {
+        --stat-color: #b7791f;
+        --stat-tint: #fff4d9;
+    }
+
+    .stat-approved {
+        --stat-color: #23815b;
+        --stat-tint: #e2f6eb;
+    }
+
+    .stat-completed {
+        --stat-color: #6954b8;
+        --stat-tint: #eee9ff;
+    }
+
+    .appointments-card {
+        overflow: hidden;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 5px 22px rgba(38, 59, 89, 0.045);
+    }
+
+    .appointments-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.4rem 1.5rem;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .appointments-title {
+        color: #263b59;
+        font-size: 1.12rem;
+        font-weight: 800;
+        margin: 0 0 0.3rem;
+    }
+
+    .appointments-description {
+        color: #8994a6;
+        font-size: 0.84rem;
+        margin: 0;
+    }
+
+    .view-all-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: #4169a1;
+        font-size: 0.87rem;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: gap 0.2s ease;
+    }
+
+    .view-all-link:hover {
+        color: #2e4e7d;
+        gap: 0.55rem;
+    }
+
+    .appointments-table-wrap {
+        padding: 0.25rem 1.25rem 0.75rem;
+    }
+
+    .appointments-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+    .appointments-table thead th {
+        color: #8a95a6;
+        background: #fff;
+        border-bottom: 1px solid #edf0f5;
+        padding: 1rem 0.75rem;
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 0.055em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .appointments-table tbody td {
+        color: #58677e;
+        border-bottom: 1px solid #f0f2f6;
+        padding: 1.05rem 0.75rem;
+        font-size: 0.88rem;
+    }
+
+    .appointments-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .appointments-table tbody tr {
+        transition: background 0.18s ease;
+    }
+
+    .appointments-table tbody tr:hover {
+        background: #f8faff;
+    }
+
+    .consultation-name {
+        display: block;
+        color: #2d405c;
+        font-weight: 700;
+        min-width: 150px;
+    }
+
+    .appointment-date,
+    .appointment-time {
+        white-space: nowrap;
+    }
+
+    .appointment-view-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.42rem 0.8rem;
+        border-radius: 9px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .appointments-empty {
+        text-align: center;
+        padding: 3.5rem 1.5rem;
+    }
+
+    .empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 1.25rem;
+        border-radius: 23px;
+        background: #edf3fc;
+        color: #4169a1;
+        font-size: 2rem;
+    }
+
+    .empty-title {
+        color: #2d405c;
+        font-size: 1.15rem;
+        font-weight: 800;
+        margin-bottom: 0.55rem;
+    }
+
+    .empty-description {
+        color: #7d899c;
+        max-width: 360px;
+        line-height: 1.7;
+        margin: 0 auto 1.35rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .dashboard-heading {
+            align-items: stretch !important;
+        }
+
+        .dashboard-primary-btn {
+            width: 100%;
+        }
+
+        .appointments-header {
+            padding: 1.15rem;
+        }
+
+        .appointments-table-wrap {
+            padding: 0.25rem 0.75rem 0.75rem;
+        }
+
+        .stat-card {
+            padding: 1.1rem;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .appointments-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .view-all-link {
+            align-self: flex-start;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+
+    <!-- Dashboard heading -->
+    <div class="dashboard-heading d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <span class="dashboard-eyebrow">
+                <span aria-hidden="true">✦</span> Student Portal
+            </span>
+
+            <h1 class="dashboard-title">Your Dashboard</h1>
+
+            <p class="dashboard-subtitle">
+                Welcome back, {{ user.first_name|default:user.username }}!
+                Here's an overview of your consultation appointments.
+            </p>
+        </div>
+
+        <a href="{% url 'appointment_create' %}"
+           class="btn btn-primary dashboard-primary-btn">
+            <span aria-hidden="true">+</span>
+            Request Consultation
+        </a>
+    </div>
+
+    <!-- Appointment statistics -->
+    <div class="row g-3 dashboard-stats">
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card stat-total">
+                <div class="stat-top">
+                    <p class="stat-label">Total Appointments</p>
+                    <div class="stat-icon" aria-hidden="true">▤</div>
+                </div>
+
+                <h2 class="stat-number">{{ appointments.count }}</h2>
+                <p class="stat-caption">All your requests</p>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card stat-pending">
+                <div class="stat-top">
+                    <p class="stat-label">Pending</p>
+                    <div class="stat-icon" aria-hidden="true">◷</div>
+                </div>
+
+                <h2 class="stat-number">{{ pending_count|default:0 }}</h2>
+                <p class="stat-caption">Waiting for a response</p>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card stat-approved">
+                <div class="stat-top">
+                    <p class="stat-label">Approved</p>
+                    <div class="stat-icon" aria-hidden="true">✓</div>
+                </div>
+
+                <h2 class="stat-number">{{ approved_count|default:0 }}</h2>
+                <p class="stat-caption">Confirmed consultations</p>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card stat-completed">
+                <div class="stat-top">
+                    <p class="stat-label">Completed</p>
+                    <div class="stat-icon" aria-hidden="true">★</div>
+                </div>
+
+                <h2 class="stat-number">{{ completed_count|default:0 }}</h2>
+                <p class="stat-caption">Finished consultations</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recent appointments -->
+    <section class="appointments-card">
+
+        <div class="appointments-header">
+            <div>
+                <h2 class="appointments-title">Your Recent Appointments</h2>
+                <p class="appointments-description">
+                    Keep track of your consultation requests and their status.
+                </p>
+            </div>
+
+            <a href="{% url 'appointment_list' %}" class="view-all-link">
+                View All <span aria-hidden="true">→</span>
+            </a>
+        </div>
+
+        {% if appointments %}
+            <div class="table-responsive appointments-table-wrap">
+                <table class="table appointments-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Consultation</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for appointment in appointments %}
+                            <tr>
+                                <td>
+                                    <span class="consultation-name">
+                                        {{ appointment.consultation_title }}
+                                    </span>
+                                </td>
+
+                                <td class="appointment-date">
+                                    {{ appointment.consultation_date|date:"M d, Y" }}
+                                </td>
+
+                                <td class="appointment-time">
+                                    {{ appointment.consultation_time|time:"g:i A" }}
+                                </td>
+
+                                <td>
+                                    <span class="status-badge status-{{ appointment.status }}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a href="{% url 'appointment_detail' appointment.pk %}"
+                                       class="btn btn-outline-primary appointment-view-btn">
+                                        View Details
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% else %}
+            <div class="appointments-empty">
+                <div class="empty-icon" aria-hidden="true">▤</div>
+
+                <h3 class="empty-title">No appointments yet</h3>
+
+                <p class="empty-description">
+                    You haven't requested a consultation yet. Create your first
+                    appointment to start keeping track of your consultations here.
+                </p>
+
+                <a href="{% url 'appointment_create' %}"
+                   class="btn btn-primary dashboard-primary-btn">
+                    <span aria-hidden="true">+</span>
+                    Request Your First Appointment
+                </a>
+            </div>
+        {% endif %}
+
+    </section>
+</div>
+{% endblock %}

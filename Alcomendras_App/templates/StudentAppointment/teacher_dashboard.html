@@ -1,0 +1,86 @@
+
+{% extends 'StudentAppointment/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h2>Teacher Dashboard</h2>
+        <p class="text-muted">Review and manage your assigned consultation appointments.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+                <h6 class="text-muted">Pending Requests</h6>
+                <h2>{{ pending_count }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+                <h6 class="text-muted">Approved</h6>
+                <h2>{{ approved_count }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+                <h6 class="text-muted">Completed</h6>
+                <h2>{{ completed_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h4 class="mb-3">My Assigned Appointments</h4>
+
+            {% if appointments %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Consultation</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                                <tr>
+                                    <td>{{ appointment.student.username }}</td>
+                                    <td>{{ appointment.consultation_title }}</td>
+                                    <td>{{ appointment.consultation_date|date:"M d, Y" }}</td>
+                                    <td>{{ appointment.consultation_time|time:"g:i A" }}</td>
+                                    <td>
+                                        <span class="badge
+                                            {% if appointment.status == 'pending' %}bg-warning text-dark
+                                            {% elif appointment.status == 'approved' %}bg-success
+                                            {% elif appointment.status == 'rejected' %}bg-danger
+                                            {% elif appointment.status == 'completed' %}bg-primary
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ appointment.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'teacher_appointment_detail' appointment.pk %}"
+                                           class="btn btn-sm btn-primary">
+                                            Review
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <h5>No assigned appointments yet</h5>
+                    <p class="text-muted mb-0">Appointments assigned to you will appear here.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,362 @@
+
+{% extends 'StudentAppointment/base.html' %}
+
+{% block title %}My Appointments | StudentAppointment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .appointment-page {
+        padding-bottom: 1.5rem;
+    }
+
+    .appointment-heading {
+        margin-bottom: 1.75rem;
+    }
+
+    .appointment-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        color: #4169a1;
+        background: #edf3fc;
+        border: 1px solid #dce7f7;
+        border-radius: 50px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        margin-bottom: 0.9rem;
+    }
+
+    .appointment-page-title {
+        color: #263b59;
+        font-size: clamp(1.65rem, 3vw, 2.15rem);
+        font-weight: 800;
+        letter-spacing: -0.045em;
+        margin-bottom: 0.45rem;
+    }
+
+    .appointment-page-subtitle {
+        color: #748197;
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
+    .new-appointment-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        padding: 0.8rem 1.15rem;
+        border-radius: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+        box-shadow: 0 6px 16px rgba(65, 105, 161, 0.16);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .new-appointment-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 9px 22px rgba(65, 105, 161, 0.22);
+    }
+
+    .appointment-list-card {
+        overflow: hidden;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 5px 22px rgba(38, 59, 89, 0.045);
+    }
+
+    .appointment-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.4rem 1.5rem;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .appointment-list-title {
+        color: #263b59;
+        font-size: 1.12rem;
+        font-weight: 800;
+        margin-bottom: 0.3rem;
+    }
+
+    .appointment-list-description {
+        color: #8994a6;
+        font-size: 0.84rem;
+        margin-bottom: 0;
+    }
+
+    .appointment-count-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+        padding: 0 0.65rem;
+        border-radius: 11px;
+        background: #edf3fc;
+        color: #4169a1;
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+    .appointment-table-wrap {
+        padding: 0.25rem 1.25rem 0.75rem;
+    }
+
+    .appointment-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+    .appointment-table thead th {
+        color: #8a95a6;
+        background: #fff;
+        border-bottom: 1px solid #edf0f5;
+        padding: 1rem 0.75rem;
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 0.055em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .appointment-table tbody td {
+        color: #58677e;
+        border-bottom: 1px solid #f0f2f6;
+        padding: 1.05rem 0.75rem;
+        font-size: 0.88rem;
+    }
+
+    .appointment-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .appointment-table tbody tr {
+        transition: background 0.18s ease;
+    }
+
+    .appointment-table tbody tr:hover {
+        background: #f8faff;
+    }
+
+    .consultation-title {
+        display: block;
+        min-width: 150px;
+        color: #2d405c;
+        font-weight: 700;
+        line-height: 1.5;
+    }
+
+    .appointment-date,
+    .appointment-time {
+        white-space: nowrap;
+    }
+
+    .appointment-location {
+        min-width: 130px;
+        max-width: 220px;
+        color: #66758b;
+        line-height: 1.5;
+    }
+
+    .appointment-details-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        padding: 0.45rem 0.8rem;
+        border-radius: 9px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        white-space: nowrap;
+        transition: transform 0.2s ease;
+    }
+
+    .appointment-details-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .appointment-empty-state {
+        text-align: center;
+        padding: 3.5rem 1.5rem;
+    }
+
+    .appointment-empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 1.25rem;
+        border-radius: 23px;
+        background: #edf3fc;
+        color: #4169a1;
+        font-size: 2rem;
+    }
+
+    .appointment-empty-title {
+        color: #2d405c;
+        font-size: 1.15rem;
+        font-weight: 800;
+        margin-bottom: 0.55rem;
+    }
+
+    .appointment-empty-description {
+        color: #7d899c;
+        max-width: 380px;
+        line-height: 1.7;
+        margin: 0 auto 1.35rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .appointment-heading {
+            align-items: stretch !important;
+        }
+
+        .new-appointment-btn {
+            width: 100%;
+        }
+
+        .appointment-list-header {
+            padding: 1.15rem;
+        }
+
+        .appointment-table-wrap {
+            padding: 0.25rem 0.75rem 0.75rem;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .appointment-list-header {
+            align-items: flex-start;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="appointment-page">
+
+    <!-- Page heading -->
+    <div class="appointment-heading d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <span class="appointment-eyebrow">
+                <span aria-hidden="true">▤</span> Consultation Records
+            </span>
+
+            <h1 class="appointment-page-title">My Appointments</h1>
+
+            <p class="appointment-page-subtitle">
+                View and manage your consultation requests in one place.
+            </p>
+        </div>
+
+        <a href="{% url 'appointment_create' %}"
+           class="btn btn-primary new-appointment-btn">
+            <span aria-hidden="true">+</span>
+            New Appointment
+        </a>
+    </div>
+
+    <!-- Appointment list -->
+    <section class="appointment-list-card">
+
+        <div class="appointment-list-header">
+            <div>
+                <h2 class="appointment-list-title">All Consultation Requests</h2>
+                <p class="appointment-list-description">
+                    Review your appointment details, schedule, and current status.
+                </p>
+            </div>
+
+            {% if appointments %}
+                <span class="appointment-count-label" title="Total appointments">
+                    {{ appointments.count }}
+                </span>
+            {% endif %}
+        </div>
+
+        {% if appointments %}
+            <div class="table-responsive appointment-table-wrap">
+                <table class="table appointment-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Consultation</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for appointment in appointments %}
+                            <tr>
+                                <td>
+                                    <span class="consultation-title">
+                                        {{ appointment.consultation_title }}
+                                    </span>
+                                </td>
+
+                                <td class="appointment-date">
+                                    {{ appointment.consultation_date|date:"M d, Y" }}
+                                </td>
+
+                                <td class="appointment-time">
+                                    {{ appointment.consultation_time|time:"g:i A" }}
+                                </td>
+
+                                <td>
+                                    <div class="appointment-location">
+                                        {{ appointment.location|default:"To be announced" }}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="status-badge status-{{ appointment.status }}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a href="{% url 'appointment_detail' appointment.pk %}"
+                                       class="btn btn-outline-primary appointment-details-btn">
+                                        Details
+                                        <span aria-hidden="true">→</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% else %}
+            <div class="appointment-empty-state">
+                <div class="appointment-empty-icon" aria-hidden="true">▤</div>
+
+                <h3 class="appointment-empty-title">No appointments found</h3>
+
+                <p class="appointment-empty-description">
+                    You haven't submitted a consultation request yet.
+                    When you create one, its schedule and status will appear here.
+                </p>
+
+                <a href="{% url 'appointment_create' %}"
+                   class="btn btn-primary new-appointment-btn">
+                    <span aria-hidden="true">+</span>
+                    Request an Appointment
+                </a>
+            </div>
+        {% endif %}
+
+    </section>
+</div>
+{% endblock %}

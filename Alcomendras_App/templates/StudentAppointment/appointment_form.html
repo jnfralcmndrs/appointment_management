@@ -1,0 +1,378 @@
+
+{% extends 'StudentAppointment/base.html' %}
+
+{% block title %}Request Appointment | StudentAppointment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .appointment-form-page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding-bottom: 2rem;
+    }
+
+    .form-back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        color: #4169a1;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        transition: gap 0.2s ease, color 0.2s ease;
+    }
+
+    .form-back-link:hover {
+        gap: 0.75rem;
+        color: #2e4e7d;
+    }
+
+    .appointment-form-card {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(38, 59, 89, 0.06);
+    }
+
+    .appointment-form-header {
+        padding: 1.75rem 2rem;
+        background: linear-gradient(135deg, #f3f7fe 0%, #fff 100%);
+        border-bottom: 1px solid #e9eef7;
+    }
+
+    .form-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        color: #4169a1;
+        background: #e7effc;
+        border: 1px solid #dce7f7;
+        border-radius: 50px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 0.9rem;
+    }
+
+    .appointment-form-title {
+        color: #263b59;
+        font-size: clamp(1.5rem, 3vw, 1.9rem);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin-bottom: 0.55rem;
+    }
+
+    .appointment-form-subtitle {
+        color: #748197;
+        line-height: 1.7;
+        margin-bottom: 0;
+        max-width: 560px;
+    }
+
+    .appointment-form-body {
+        padding: 2rem;
+    }
+
+    .form-intro {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        padding: 1rem 1.1rem;
+        margin-bottom: 1.75rem;
+        background: #f6f9fe;
+        border: 1px solid #e6edf9;
+        border-radius: 13px;
+    }
+
+    .form-intro-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #e4edfc;
+        color: #4169a1;
+        font-size: 1.1rem;
+        font-weight: 800;
+    }
+
+    .form-intro-title {
+        color: #304766;
+        font-size: 0.9rem;
+        font-weight: 800;
+        margin-bottom: 0.25rem;
+    }
+
+    .form-intro-text {
+        color: #748197;
+        font-size: 0.84rem;
+        line-height: 1.65;
+        margin-bottom: 0;
+    }
+
+    .appointment-field {
+        margin-bottom: 1.35rem;
+    }
+
+    .appointment-field label,
+    .appointment-field .form-label {
+        display: block;
+        color: #344760;
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 0.55rem;
+    }
+
+    .appointment-field input:not([type="checkbox"]):not([type="radio"]),
+    .appointment-field select,
+    .appointment-field textarea {
+        display: block;
+        width: 100%;
+        min-height: 46px;
+        padding: 0.7rem 0.9rem;
+        color: #30415a;
+        background-color: #fff;
+        border: 1px solid #dce4ef;
+        border-radius: 11px;
+        font-size: 0.92rem;
+        box-shadow: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .appointment-field textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .appointment-field input:focus,
+    .appointment-field select:focus,
+    .appointment-field textarea:focus {
+        outline: none;
+        border-color: #7197cf;
+        box-shadow: 0 0 0 3px rgba(65, 105, 161, 0.12);
+    }
+
+    .appointment-field input[type="checkbox"],
+    .appointment-field input[type="radio"] {
+        accent-color: #4169a1;
+    }
+
+    .appointment-field .form-text,
+    .appointment-field .helptext {
+        display: block;
+        color: #8490a2;
+        font-size: 0.8rem;
+        line-height: 1.6;
+        margin-top: 0.45rem;
+    }
+
+    .appointment-field .text-danger {
+        color: #b42335 !important;
+        font-size: 0.82rem;
+        margin-top: 0.45rem;
+    }
+
+    .appointment-form-errors {
+        border: 1px solid #f3c6cc;
+        border-radius: 12px;
+        padding: 1rem 1.15rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .appointment-form-errors ul {
+        margin-bottom: 0;
+        padding-left: 1.25rem;
+    }
+
+    .appointment-form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        padding-top: 1.5rem;
+        margin-top: 0.75rem;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .appointment-submit-btn,
+    .appointment-cancel-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: 46px;
+        padding: 0.7rem 1.25rem;
+        border-radius: 11px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .appointment-submit-btn {
+        box-shadow: 0 5px 14px rgba(65, 105, 161, 0.15);
+    }
+
+    .appointment-submit-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(65, 105, 161, 0.2);
+    }
+
+    .appointment-cancel-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .form-footer-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        color: #8490a2;
+        font-size: 0.8rem;
+        line-height: 1.6;
+        margin-top: 1.25rem;
+        margin-bottom: 0;
+    }
+
+    .form-footer-note span {
+        color: #4169a1;
+        font-weight: 800;
+    }
+
+    @media (max-width: 575.98px) {
+        .appointment-form-header {
+            padding: 1.4rem 1.2rem;
+        }
+
+        .appointment-form-body {
+            padding: 1.35rem 1.2rem;
+        }
+
+        .appointment-form-actions {
+            flex-direction: column;
+        }
+
+        .appointment-submit-btn,
+        .appointment-cancel-btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="appointment-form-page">
+
+    <a href="{% url 'appointment_list' %}" class="form-back-link">
+        <span aria-hidden="true">&larr;</span>
+        Back to My Appointments
+    </a>
+
+    <section class="appointment-form-card">
+
+        <!-- Form heading -->
+        <div class="appointment-form-header">
+            <span class="form-eyebrow">
+                <span aria-hidden="true">✦</span>
+                Consultation Request
+            </span>
+
+            <h1 class="appointment-form-title">
+                {% if form.instance.pk %}
+                    Edit Appointment
+                {% else %}
+                    Request a Consultation
+                {% endif %}
+            </h1>
+
+            <p class="appointment-form-subtitle">
+                Complete the information below to
+                {% if form.instance.pk %}
+                    update your consultation request.
+                {% else %}
+                    submit your consultation request.
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Form fields -->
+        <div class="appointment-form-body">
+
+            <div class="form-intro">
+                <div class="form-intro-icon" aria-hidden="true">i</div>
+                <div>
+                    <p class="form-intro-title">Before you begin</p>
+                    <p class="form-intro-text">
+                        Please provide accurate information and double-check your
+                        preferred consultation date and time before submitting.
+                    </p>
+                </div>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger appointment-form-errors" role="alert">
+                        <strong class="d-block mb-2">
+                            Please check the following:
+                        </strong>
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    {% if field.name != 'status' and field.name != 'staff_remarks' and field.name != 'student' %}
+                        <div class="appointment-field">
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span class="text-danger" aria-hidden="true">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <div class="text-danger small mt-1" role="alert">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div class="appointment-form-actions">
+                    <button type="submit" class="btn btn-primary appointment-submit-btn">
+                        <span aria-hidden="true">✓</span>
+                        {% if form.instance.pk %}
+                            Save Changes
+                        {% else %}
+                            Submit Request
+                        {% endif %}
+                    </button>
+
+                    <a href="{% url 'appointment_list' %}"
+                       class="btn btn-outline-secondary appointment-cancel-btn">
+                        Cancel
+                    </a>
+                </div>
+
+                <p class="form-footer-note">
+                    <span aria-hidden="true">*</span>
+                    Fields marked with an asterisk are required.
+                </p>
+            </form>
+
+        </div>
+    </section>
+</div>
+{% endblock %}
